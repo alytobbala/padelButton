@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0f14" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <title>PadelButton</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <!-- ===================== SCOREBOARD SCREEN ===================== -->
+  <main id="screen-game" class="screen screen--active">
+    <header class="topbar">
+      <button id="btn-settings" class="icon-btn" aria-label="Settings" title="Settings">&#9881;</button>
+      <div id="conn-status" class="conn conn--off" role="status" aria-live="polite">
+        <span class="conn__dot"></span>
+        <span class="conn__label">Disconnected</span>
+      </div>
+      <button id="btn-mute" class="icon-btn" aria-label="Mute announcements" title="Mute">&#128266;</button>
+    </header>
+
+    <section class="sets" aria-label="Sets won">
+      <div class="sets__team">
+        <span class="sets__name" data-team-name="A">Team A</span>
+        <span class="sets__count" id="setsA">0</span>
+      </div>
+      <div class="sets__vs">SETS</div>
+      <div class="sets__team">
+        <span class="sets__name" data-team-name="B">Team B</span>
+        <span class="sets__count" id="setsB">0</span>
+      </div>
+    </section>
+
+    <section class="games" id="games-history" aria-label="Games per set"></section>
+
+    <section class="scoreboard">
+      <button class="team team--a" id="point-A" aria-label="Add point Team A">
+        <span class="team__label" data-team-name="A">Team A</span>
+        <span class="team__points" id="pointsA">0</span>
+        <span class="team__games"><span id="gamesA">0</span> games</span>
+        <span class="team__serve" id="serveA" aria-hidden="true">&#127934;</span>
+      </button>
+      <div class="divider"><span id="set-label">Set 1</span></div>
+      <button class="team team--b" id="point-B" aria-label="Add point Team B">
+        <span class="team__label" data-team-name="B">Team B</span>
+        <span class="team__points" id="pointsB">0</span>
+        <span class="team__games"><span id="gamesB">0</span> games</span>
+        <span class="team__serve" id="serveB" aria-hidden="true">&#127934;</span>
+      </button>
+    </section>
+
+    <footer class="controls">
+      <button id="btn-undo" class="ctrl-btn">&#8630; Undo</button>
+      <button id="btn-connect" class="ctrl-btn ctrl-btn--primary">Connect Device</button>
+      <button id="btn-reset" class="ctrl-btn ctrl-btn--danger">Reset</button>
+    </footer>
+
+    <div id="winner-banner" class="banner" hidden>
+      <div class="banner__inner">
+        <div class="banner__title">Match Won!</div>
+        <div class="banner__team" id="winner-team">Team A</div>
+        <button id="btn-new-match" class="ctrl-btn ctrl-btn--primary">New Match</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ===================== SETTINGS SCREEN ===================== -->
+  <section id="screen-settings" class="screen screen--settings" hidden>
+    <header class="topbar">
+      <button id="btn-back" class="icon-btn" aria-label="Back">&#8592;</button>
+      <h1 class="topbar__title">Settings</h1>
+      <span class="icon-btn icon-btn--spacer" aria-hidden="true"></span>
+    </header>
+
+    <div class="settings">
+      <div class="setting">
+        <label class="setting__label">Match format</label>
+        <div class="seg" id="set-format" role="radiogroup" aria-label="Match format">
+          <button class="seg__btn" data-value="1">Best of 1</button>
+          <button class="seg__btn" data-value="3">Best of 3</button>
+          <button class="seg__btn" data-value="5">Best of 5</button>
+        </div>
+        <p class="setting__hint">Win <span id="hint-sets">2</span> set(s) to take the match.</p>
+      </div>
+
+      <div class="setting">
+        <label class="setting__label">Deuce rule</label>
+        <div class="seg" id="set-deuce" role="radiogroup" aria-label="Deuce rule">
+          <button class="seg__btn" data-value="advantage">Advantage</button>
+          <button class="seg__btn" data-value="golden">Golden point</button>
+        </div>
+        <p class="setting__hint">Golden point: sudden death at 40&ndash;40 (no ad).</p>
+      </div>
+
+      <div class="setting">
+        <label class="setting__label">Tiebreak at 6&ndash;6</label>
+        <div class="seg" id="set-tiebreak" role="radiogroup" aria-label="Tiebreak">
+          <button class="seg__btn" data-value="on">On</button>
+          <button class="seg__btn" data-value="off">Off</button>
+        </div>
+        <p class="setting__hint">Off: set continues until a 2-game lead.</p>
+      </div>
+
+      <hr class="settings__rule" />
+
+      <div class="setting">
+        <label class="setting__label">Announcements</label>
+        <div class="seg" id="set-mute" role="radiogroup" aria-label="Announcements">
+          <button class="seg__btn" data-value="on">On</button>
+          <button class="seg__btn" data-value="off">Muted</button>
+        </div>
+      </div>
+
+      <div class="setting">
+        <label class="setting__label" for="set-pack">Announcement pack</label>
+        <select id="set-pack" class="select"></select>
+      </div>
+
+      <div class="setting">
+        <label class="setting__label" for="set-voice">Voice (Web Speech)</label>
+        <select id="set-voice" class="select"></select>
+        <button id="btn-test-voice" class="ctrl-btn">&#9654; Test voice</button>
+      </div>
+
+      <hr class="settings__rule" />
+
+      <div class="setting">
+        <label class="setting__label">Team names</label>
+        <input id="name-A" class="input" type="text" maxlength="14" placeholder="Team A" />
+        <input id="name-B" class="input" type="text" maxlength="14" placeholder="Team B" />
+      </div>
+
+      <p class="settings__version">PadelButton &middot; v1.0.0</p>
+    </div>
+  </section>
+
+  <script src="js/audio.js"></script>
+  <script src="js/score.js"></script>
+  <script src="js/bluetooth.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

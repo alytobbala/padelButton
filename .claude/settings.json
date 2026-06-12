@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(run)",
+      "Skill(run:*)",
+      "PowerShell(Start-Process powershell -ArgumentList \"-NoProfile -Command `\"cd 'c:\\\\Tobbala\\\\02_privateProjects\\\\06_padelButton\\\\padelButton'; python -m http.server 8080`\"\" -WindowStyle Minimized; Start-Sleep -Seconds 2; Start-Process \"http://localhost:8080\")"
+    ]
+  }
+}

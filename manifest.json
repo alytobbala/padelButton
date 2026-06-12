@@ -1,0 +1,20 @@
+{
+  "name": "PadelButton — Score Tracker",
+  "short_name": "PadelButton",
+  "description": "Padel score tracker with Bluetooth buttons and audio announcements.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0b0f14",
+  "theme_color": "#0b0f14",
+  "categories": ["sports", "utilities"],
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
