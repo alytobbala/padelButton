@@ -73,7 +73,7 @@
       this._setStatus(team, STATUS.CONNECTING);
       try {
         const device = await navigator.bluetooth.requestDevice({
-          filters: [{ name: DEVICE_NAME }],
+          acceptAllDevices: true,
           optionalServices: OPTIONAL_SERVICES
         });
 

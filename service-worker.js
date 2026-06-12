@@ -2,7 +2,7 @@
    Service worker — offline-first cache for the PadelButton PWA.
    Bump CACHE_VERSION whenever the cached assets change.
    ==================================================================== */
-const CACHE_VERSION = "padelbutton-v4";
+const CACHE_VERSION = "padelbutton-v5";
 const ASSETS = [
   "./",
   "./index.html",
