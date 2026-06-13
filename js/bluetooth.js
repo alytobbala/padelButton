@@ -21,12 +21,10 @@
   // ---- Adjust these to match the PadelButton firmware ----------------
   const DEVICE_NAME = "PadelButton";
 
-  // Custom GATT profile (placeholder UUIDs — replace with real ones).
-  const BUTTON_SERVICE = "0000ffe0-0000-1000-8000-00805f9b34fb";
-  const BUTTON_CHAR     = "0000ffe1-0000-1000-8000-00805f9b34fb";
+  // GATT profile matching the ESP32 firmware.
+  const BUTTON_SERVICE = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+  const BUTTON_CHAR     = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
 
-  // Optional well-known services to also request access to (helps when
-  // testing against generic dev kits). Safe to leave as-is.
   const OPTIONAL_SERVICES = [BUTTON_SERVICE, "battery_service", "device_information"];
 
   const STATUS = { OFF: "off", CONNECTING: "connecting", ON: "on" };
@@ -45,7 +43,7 @@
   class PadelBluetooth {
     constructor() {
       this.slots = [new DeviceSlot(0), new DeviceSlot(1)];
-      this._handlers = { press: [], status: [] };
+      this._handlers = { press: [], undo: [], reset: [], status: [] };
       this._boundNotify = this._onNotify.bind(this);
       this._boundDisconnect = this._onDisconnect.bind(this);
     }
@@ -119,10 +117,20 @@
 
     /* ----- notifications ------------------------------------------- */
     _onNotify(team, event) {
-      // The firmware may encode click type / battery in the value; for now
-      // any notification counts as a single press for this team.
       const value = event.target.value; // DataView
-      this._emit("press", { team, value });
+      const msg = new TextDecoder().decode(value).trim();
+      if (msg === "POINT_MY_TEAM") {
+        this._emit("press", { team });
+      } else if (msg === "POINT_OPPONENT") {
+        this._emit("press", { team: 1 - team });
+      } else if (msg === "UNDO") {
+        this._emit("undo", {});
+      } else if (msg === "RESET") {
+        this._emit("reset", {});
+      } else {
+        // Unknown message — treat as a point for safety.
+        this._emit("press", { team });
+      }
     }
 
     _onDisconnect(team) {

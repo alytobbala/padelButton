@@ -142,6 +142,8 @@
 
   /* ---------------- Connection status ---------------------------- */
   bt.on("press", ({ team }) => addPoint(team));
+  bt.on("undo",  () => undo());
+  bt.on("reset", () => doReset());
   bt.on("status", () => renderConnStatus());
 
   function renderConnStatus() {
@@ -188,12 +190,16 @@
   }
 
   /* ---------------- Reset / undo --------------------------------- */
-  function resetMatch() {
-    if (!confirm("Reset the match? Current score will be lost.")) return;
+  function doReset() {
     match = newMatch();
     el.banner.hidden = true;
     announcer.cancel();
     render();
+  }
+
+  function resetMatch() {
+    if (!confirm("Reset the match? Current score will be lost.")) return;
+    doReset();
   }
 
   function undo() {
